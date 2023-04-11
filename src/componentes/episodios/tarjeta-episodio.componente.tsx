@@ -1,3 +1,4 @@
+import { FunctionComponent, useEffect, useState } from 'react';
 import './tarjeta-episodio.css';
 
 /**
@@ -8,15 +9,36 @@ import './tarjeta-episodio.css';
  * 
  * @returns un JSX element 
  */
-const TarjetaEpisodio = () => {
+interface TarjetaEpisodioProps {
+  url: string
+}
 
-    return <div className="tarjeta-episodio">
-            <h4>Close Rick-counters of the Rick Kind</h4>
+interface EpisodeData {
+  name: string,
+  air_date:string,
+  episode:string
+}
+
+const TarjetaEpisodio: FunctionComponent<TarjetaEpisodioProps> = ({url}) => {
+  const [episode, setEpisode] = useState<EpisodeData>();
+
+  const getEpisode = async (url: string) => {
+    const data = await fetch(url).then(response => response.json()) as EpisodeData
+    setEpisode(data);
+  }
+  useEffect(() => {
+    getEpisode(url);
+  }, [url])
+
+    return episode ? (
+      <div className="tarjeta-episodio">
+            <h4>{episode.name}</h4>
             <div>
-                <span>S01E01</span>
-                <span>Lanzado el: April 7, 2014</span>
+                <span>{episode.episode}</span>
+                <span>{episode.air_date}</span>
             </div>
-    </div>
+      </div>
+    ) : null;
 }
 
 export default TarjetaEpisodio;

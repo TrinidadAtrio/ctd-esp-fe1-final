@@ -1,6 +1,8 @@
 import "./Detalle.css";
 import BotonFavorito from "../componentes/botones/boton-favorito.componente";
 import TarjetaEpisodio from "../componentes/episodios/tarjeta-episodio.componente";
+import { useAppSelector } from "../store";
+import { useEffect } from "react";
 
 /**
  * Esta es la pagina de detalle. Aqui se puede mostrar la vista sobre el personaje seleccionado junto con la lista de episodios en los que aparece
@@ -15,27 +17,29 @@ import TarjetaEpisodio from "../componentes/episodios/tarjeta-episodio.component
  * @returns la pagina de detalle
  */
 const PaginaDetalle = () => {
-    return <div className="container">
-        <h3>Rick Sanchez</h3>
+  const character = useAppSelector(state => state.character.selectedCharacter);
+
+    return (character && (
+      <div className="container">
+        <h3>{character.name}</h3>
         <div className={"detalle"}>
             <div className={"detalle-header"}>
-                <img src="https://rickandmortyapi.com/api/character/avatar/1.jpeg" alt="Rick Sanchez"/>
+                <img src={character.image} alt="Rick Sanchez"/>
                 <div className={"detalle-header-texto"}>
 
-                    <p>Rick Sanchez</p>
-                    <p>Planeta: Earth</p>
-                    <p>Genero: Male</p>
+                    <p>{character.name}</p>
+                    <p>Planeta: {character.origin.name}</p>
+                    <p>Genero: {character.gender}</p>
                 </div>
-                <BotonFavorito esFavorito={false} />
+                <BotonFavorito characterId={character.id} />
             </div>
         </div>
         <h4>Lista de episodios donde apareció el personaje</h4>
         <div className={"episodios-grilla"}>
-            <TarjetaEpisodio />
-            <TarjetaEpisodio />
-            <TarjetaEpisodio />
+          {character.episode.map((url) => <TarjetaEpisodio url={url}/>)}
         </div>
-    </div>
+      </div>
+    )) || null
 }
 
 export default PaginaDetalle

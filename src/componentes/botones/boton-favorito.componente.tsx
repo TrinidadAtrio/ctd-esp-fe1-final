@@ -1,5 +1,6 @@
-import {FunctionComponent} from 'react';
+import {FunctionComponent, MouseEventHandler, useState} from 'react';
 import './boton-favorito.css';
+import { CHARACTER_ACTIONS, dispatchCharacter, useAppSelector } from '../../store';
 /**
  * Boton que indica si un elemento es favorito o no, y da la posibilidad de marcarlo/desmarcarlo
  * 
@@ -10,16 +11,35 @@ import './boton-favorito.css';
  */
 
 interface BotonFavoritoProps {
-  esFavorito: boolean,
-  onClick?: Function,
+  // esFavorito: boolean,
+  // onClick: MouseEventHandler,
+  characterId: string,
 };
 
-const BotonFavorito: FunctionComponent<BotonFavoritoProps> = ({esFavorito, onClick}) => {
-    const src = esFavorito ? "/imagenes/star-filled.png" : "/imagenes/star.png"
+const BotonFavorito: FunctionComponent<BotonFavoritoProps> = ({ characterId }) => {
+  // const [isFavourite, setIsFavourite] = useState(false);
+  const favouriteCharacters = useAppSelector(state => state.character.favourites);
 
-    return <div className="boton-favorito">
-        <img src={src} alt={"favorito"} />
-    </div>
+  const dispatch = dispatchCharacter();
+
+  const handleOnClick: MouseEventHandler = (event) => {
+    event.stopPropagation();
+    if (favouriteCharacters.includes(characterId)) {
+      return dispatch(CHARACTER_ACTIONS.deleteFavourite(characterId));
+    }
+    dispatch(CHARACTER_ACTIONS.saveFavourite(characterId));
+  };
+  const src = favouriteCharacters.includes(characterId) ? "/imagenes/star-filled.png" : "/imagenes/star.png"
+
+    return (
+      <button onClick={handleOnClick}>
+        <div className="boton-favorito">
+            <img src={src} alt={"favorito"} />
+        </div>
+
+      </button>
+
+    )
 }
 
 export default BotonFavorito;

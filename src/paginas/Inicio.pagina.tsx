@@ -10,7 +10,8 @@ import Paginacion from "../componentes/paginacion/paginacion.componente";
  * 
  * @returns la pagina de inicio
  */
-const PaginaInicio = () => {
+const PaginaInicio = () => { 
+
     return <div className="container">
         <div className="actions">
             <h3>Catálogo de Personajes</h3>

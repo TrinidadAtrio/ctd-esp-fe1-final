@@ -1,5 +1,8 @@
+import { FunctionComponent } from 'react';
+import { CHARACTER_ACTIONS, Character, dispatchCharacter } from '../../store';
 import BotonFavorito from '../botones/boton-favorito.componente';
 import './tarjeta-personaje.css';
+import { useNavigate } from "react-router-dom";
 
 /**
  * Tarjeta para cada personaje dentro de la grilla de personajes. 
@@ -9,15 +12,29 @@ import './tarjeta-personaje.css';
  * 
  * @returns un JSX element 
  */
-const TarjetaPersonaje = () => {
 
-    return <div className="tarjeta-personaje">
-        <img src="https://rickandmortyapi.com/api/character/avatar/1.jpeg" alt="Rick Sanchez"/>
-        <div className="tarjeta-personaje-body">
-            <span>Rick Sanchez</span>
-            <BotonFavorito esFavorito={false} />
+interface TarjetaPersonajeProps extends Character {}
+
+const TarjetaPersonaje: FunctionComponent<TarjetaPersonajeProps> = (props) => {
+  const dispatch = dispatchCharacter();
+  const navigate = useNavigate();
+  const handleOnClickCharacter = () => {
+    dispatch(CHARACTER_ACTIONS.viewCharacter(props));
+
+    navigate('detalle')
+  };
+
+    return (
+      <button onClick={handleOnClickCharacter}>
+        <div className="tarjeta-personaje">
+          <img src={props.image} alt={props.name} />
+          <div className="tarjeta-personaje-body">
+              <span>{props.name}</span>
+              <BotonFavorito characterId={props.id} />
+          </div>
         </div>
-    </div>
+      </button>
+    )
 }
 
 export default TarjetaPersonaje;
